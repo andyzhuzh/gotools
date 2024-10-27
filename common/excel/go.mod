@@ -2,9 +2,7 @@ module github.com/andyzhuzh/gotools/common/excel
 
 go 1.23.2
 
-require (
-	github.com/xuri/excelize/v2 v2.9.0
-)
+require github.com/xuri/excelize/v2 v2.9.0
 
 require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
