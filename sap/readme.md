@@ -45,4 +45,92 @@ dateValue = (*C.RFC_CHAR)(C.GoMallocU(8))
 timeValue = (*C.RFC_CHAR)(C.GoMallocU(6))
 ```
 
+# 调用说明
++ 创建连接
+```go
+func NewServer(serverName, clientID, systemNo, userName, password, language, sapRouter string) (server SapServer) {
+	server.ConnectSystem(serverName, clientID, systemNo, userName, password, language, sapRouter)
+	return
+}
+```
++ call Function 
+```go
+func testfunction(imSysName, imFileName string) {
+	sapinstance := NewServer(...)
+	defer sapinstance.Clear()
+	// datef, _ := time.Parse(time.DateOnly, "20210108")
+	datet, _ := time.Parse(time.DateOnly, "2024-09-09")
+	params := map[string]interface{}{
+		"HOLIDAY_CALENDAR": "ZT",
+		"DATE_FROM":        func() time.Time { datef, _ := time.Parse(time.DateOnly, "2021-01-08"); return datef }(), //"20210108",
+		"DATE_TO":          datet,
+	}
+	functionName := "DAY_ATTRIBUTES_GET"
+
+	fmt.Println("开始查询：", time.Now().Format("2006-01-02 15:04:05"))
+	resultMap, err := sapinstance.CallRFC(functionName, params)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println("查询完：", time.Now().Format("2006-01-02 15:04:05"))
+
+	resultM := resultMap
+	resultParaList := sap.GetObjectListFromResult(resultM)
+	fmt.Println("返回参数列表：")
+	for k, v := range resultParaList {
+		fmt.Println(PadRight(k, 20), " : ", v)
+	}
+	// fmt.Println(sap.GetObjectListFromResult(resultM))
+
+	// 保存excel文件
+	excelfilename := imFileName + ".XLSX"
+	err1 := sapinstance.ExportTableToEXCEL(resultM, functionName, "DAY_ATTRIBUTES", excelfilename, "DAY_ATTRIBUTES")
+	if err1 != nil {
+		println(err1.Error())
+	}
+
+	fmt.Println("文件保存完成：", time.Now().Format("2006-01-02 15:04:05"))
+}
+
+```
+
++ 显示函数参数列表
+```go
+func PrintFunctionParameters(imSysName, imFuncName string) {
+	sapinstance := NewServer(...)
+	defer sapinstance.Clear()
+	sapinstance.PrintFunctionParameters(imFuncName)
+}
+```
+
++ 显示函数参数类型
+```go
+func PrintFunctionParameterType(imSysName, imFuncName, imParaName string) {
+	sapinstance := NewServer(...)
+	defer sapinstance.Clear()
+	sapinstance.PrintFunctionParameterType(imFuncName, imParaName)
+}
+```
+
++ 显示表结构
+```go
+func PrintTableStructure(imSysName, imTabName string) {
+	sapinstance := NewServer(...)
+	defer sapinstance.Clear()
+	sapinstance.PrintTableStructure(imTabName)
+
+}
+```
++ 表结构保存excel
+```go
+func TableStructureToExcel(imSysName, imTabName, fileName string) {
+	sapinstance := NewServer(...)
+	defer sapinstance.Clear()
+	sapinstance.TableStructureToExcel(imTabName, fileName)
+
+}
+```
+
 
