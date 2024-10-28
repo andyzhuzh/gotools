@@ -1,4 +1,4 @@
-module github.com/anduzhuzh/gotools/common/pdf
+module github.com/andyzhuzh/gotools/common/pdf
 
 go 1.23.2
 
