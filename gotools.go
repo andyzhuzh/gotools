@@ -3,9 +3,13 @@ package gotools
 import (
 	"bufio"
 	"bytes"
-	"encoding/json"
 	"encoding/csv"
+	"encoding/json"
+	"fmt"
 	"os"
+	"reflect"
+	"strconv"
+	"time"
 )
 
 func StructToMap(content interface{}) (map[string]interface{}, error) {
@@ -96,7 +100,6 @@ func FileWriteCSV(filename string, content []map[string]interface{}) error {
 	// 写入更多数据行,重复
 	for _, row := range content {
 		var rowstring []string
-		rowstring = append(rowstring)
 		for _, field := range row {
 			switch value := field.(type) {
 			case string:
@@ -125,11 +128,11 @@ func FileWriteCSV(filename string, content []map[string]interface{}) error {
 				rowstring = append(rowstring, str)
 			}
 
-			err = writer.Write(rowstring)
-			if err != nil {
-				// fmt.Println("Error writing to file", err)
-				return err
-			}
+		}
+		err = writer.Write(rowstring)
+		if err != nil {
+			// fmt.Println("Error writing to file", err)
+			return err
 		}
 	}
 	// fmt.Println("CSV file created!")
