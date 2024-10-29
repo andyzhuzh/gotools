@@ -51,7 +51,7 @@ func FileReadToSlices(filename string) (context []string, err error) {
 	return
 }
 
-func FileWriteText(filefullName, content string) error {
+func FileSaveText(filefullName, content string) error {
 	//写文件,打开文件，如果不存在则创建
 	f, err := os.OpenFile(filefullName, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
@@ -66,7 +66,7 @@ func FileWriteText(filefullName, content string) error {
 	return nil
 }
 
-func FileWriteCSV(filename string, content []map[string]interface{}) error {
+func FileSaveCSV(filename string, content []map[string]interface{}) error {
 
 	// 创建CSV文件
 	// file, err := os.Create(filename)
