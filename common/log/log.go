@@ -50,11 +50,11 @@ func LogAdd(formatType, outputType, logType, logMessage, fileName string, fields
 	logger.LogClose()
 }
 
-func AddShow(logType, logMessage string) {
+func AddShow(logMessage, logType string) {
 	LogAdd(TextFormat, OutputTypeShow, logType, logMessage, "", nil)
 }
 
-func AddFile(logType, logMessage, fileName string) {
+func AddFile(logMessage, logType, fileName string) {
 	LogAdd(TextFormat, OutputTypeFile, logType, logMessage, fileName, nil)
 }
 
