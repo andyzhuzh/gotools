@@ -9,6 +9,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -53,6 +54,10 @@ func FileReadToSlices(filename string) (context []string, err error) {
 
 func FileSaveText(filefullName, content string) error {
 	//写文件,打开文件，如果不存在则创建
+	var rwMutext sync.RWMutex
+	rwMutext.Lock()
+	defer rwMutext.Unlock()
+
 	f, err := os.OpenFile(filefullName, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return err
@@ -67,7 +72,9 @@ func FileSaveText(filefullName, content string) error {
 }
 
 func FileSaveCSV(filename string, content []map[string]interface{}) error {
-
+	var rwMutext sync.RWMutex
+	rwMutext.Lock()
+	defer rwMutext.Unlock()
 	// 创建CSV文件
 	// file, err := os.Create(filename)
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
