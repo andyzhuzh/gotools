@@ -50,6 +50,14 @@ func LogAdd(formatType, outputType, logType, logMessage, fileName string, fields
 	logger.LogClose()
 }
 
+func AddShow(logType, logMessage string) {
+	LogAdd(TextFormat, OutputTypeShow, logType, logMessage, "", nil)
+}
+
+func AddFile(logType, logMessage, fileName string) {
+	LogAdd(TextFormat, OutputTypeFile, logType, logMessage, fileName, nil)
+}
+
 func NewLogger(logFormmat string) (logger Logger, err error) {
 	if logFormmat == JsonFormat {
 		logger.Logger = logrus.New()
