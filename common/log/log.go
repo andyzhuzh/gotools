@@ -50,11 +50,23 @@ func LogAdd(formatType, outputType, logType, logMessage, fileName string, fields
 	logger.LogClose()
 }
 
-func AddShow(logMessage, logType string) {
+func AddShow(logMessage string, arg ...string) {
+	logType := InfoLog
+	if len(arg) > 0 {
+		logType = arg[0]
+	}
 	LogAdd(TextFormat, OutputTypeShow, logType, logMessage, "", nil)
 }
 
-func AddFile(logMessage, logType, fileName string) {
+func AddFile(logMessage string, arg ...string) {
+	logType := InfoLog
+	fileName := ""
+	if len(arg) > 0 {
+		logType = arg[0]
+	}
+	if len(arg) > 1 {
+		fileName = arg[1]
+	}
 	LogAdd(TextFormat, OutputTypeFile, logType, logMessage, fileName, nil)
 }
 
