@@ -9,9 +9,33 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"regexp"
+	"strings"
 	"sync"
 	"time"
 )
+
+// RegexpFindDataInString(`33333-user=ABCD -pwf23232-dd 33333-user=ABCD -pwf2d32d2a32-dd daa`, `-pwf23232-dd`, "23232")
+func RegexpFindDataInString(allString, strTemplate, data string) (result []string) {
+	firstIndex := strings.Index(strTemplate, data)
+	lastIndex := firstIndex + len(data)
+	if firstIndex == -1 || lastIndex > len(strTemplate) {
+		return
+	}
+	regString := strTemplate[:firstIndex] + "(.*?)" + strTemplate[lastIndex:]
+	// fmt.Println(regString)
+	regExpObj, err := regexp.Compile(regString)
+	if err == nil {
+		allMatch := regExpObj.FindAllStringSubmatch(allString, -1)
+		for _, match := range allMatch {
+			if len(match) > 1 {
+				result = append(result, match[1])
+			}
+		}
+	}
+	return
+}
+
 
 func StructToMap(content interface{}) (map[string]interface{}, error) {
 	var result map[string]interface{}
