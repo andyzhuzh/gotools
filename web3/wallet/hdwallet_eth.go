@@ -32,6 +32,9 @@ func (wallet *HDWalletETH) NewAccount() (*HDWalletETH, error) {
 }
 
 func (wallet *HDWalletETH) NewWallet() (err error) {
+	if wallet.Key == nil {
+		wallet.Key = new(HDMasterKey)
+	}
 	err = wallet.Key.Create()
 	if err != nil {
 		return err
