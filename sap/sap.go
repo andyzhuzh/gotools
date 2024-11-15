@@ -522,12 +522,13 @@ func (server *SapServer) RestReadSource(imObjName string, imObjType string) (str
 		urltxtselection = fmt.Sprintf(`/sap/bc/adt/textelements/programs/%s/source/selections`, objName)
 
 	case "FUNC":
-		condString := "FUNCNAME EQ '" + objName + "'"
+		condString := "FUNCNAME EQ '" + strings.TrimSpace(strings.ToUpper(imObjName)) + "'"
 		funcs, err := server.ReadTable("TFDIR", []string{condString}, []string{"PNAME"})
 		if err != nil {
 			return "", nil
 		}
 		funcGrupName := funcs[0]["PNAME"].(string)[4:]
+		funcGrupName = strings.TrimSpace(strings.ToLower(funcGrupName))
 		url = fmt.Sprintf(`/sap/bc/adt/functions/groups/%s/fmodules/%s/source/main`, funcGrupName, objName)
 		urltxtsymbol = fmt.Sprintf(`/sap/bc/adt/textelements/functiongroups/%s/source/symbols`, funcGrupName)
 		urltxtselection = fmt.Sprintf(`/sap/bc/adt/textelements/functiongroups/%s/source/selections`, funcGrupName)
