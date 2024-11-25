@@ -501,7 +501,7 @@ func (server *SapServer) RestExecuteSql(sqlStatement string) (result []map[strin
 	return
 }
 
-// 获取对象代码imObjType ： class，PROG，FUNC，TABL，如果INFO，获取对象清单及描述
+// 获取对象代码imObjType ： CLASS，PROG，FUNC，TABL，如果INFO，获取对象清单及描述
 func (server *SapServer) RestReadSource(imObjName string, imObjType string) (string, error) {
 	var url, urltxtsymbol, urltxtselection, retString string
 	var errall error
@@ -518,6 +518,13 @@ func (server *SapServer) RestReadSource(imObjName string, imObjType string) (str
 
 	case "PROG":
 		url = fmt.Sprintf(`/sap/bc/adt/programs/programs/%s/source/main`, objName)
+		urllist := server.RestGetObjectsURI(imObjName)
+		for _, uri := range urllist {
+			if uri["name"] == strings.ToUpper(objName) {
+				url = uri["uri"] + `/source/main`
+				// break
+			}
+		}
 		urltxtsymbol = fmt.Sprintf(`/sap/bc/adt/textelements/programs/%s/source/symbols`, objName)
 		urltxtselection = fmt.Sprintf(`/sap/bc/adt/textelements/programs/%s/source/selections`, objName)
 
@@ -680,6 +687,23 @@ func (server *SapServer) RestReadObjectList(imObjName string) (orgString string,
 	}
 
 	return
+}
+
+// 获取对象清单及URL
+func (server *SapServer) RestGetObjectsURI(imObjName string) (results []map[string]string) {
+	objList := make([]map[string]string, 0)
+	_, objs := server.RestReadObjectList(imObjName)
+	for _, obj := range objs {
+		// 函数组
+		if obj["type"] == "FUGR/F" {
+			// 函数组相关的Includes
+			_, funInclude := server.RestReadObjectList("L" + obj["name"])
+			objList = append(objList, funInclude...)
+		} else {
+			objList = append(objList, obj)
+		}
+	}
+	return objList
 }
 
 // 有ADT 开发权限
