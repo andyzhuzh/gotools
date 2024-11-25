@@ -5,6 +5,8 @@ import (
 	"log"
 	"path/filepath"
 	"reflect"
+	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -689,19 +691,56 @@ func (server *SapServer) RestReadObjectList(imObjName string) (orgString string,
 	return
 }
 
-// 获取对象清单及URL
+// 获取对象清单及URL,如果是函数或函数组，则获取函数组中相关的includes
 func (server *SapServer) RestGetObjectsURI(imObjName string) (results []map[string]string) {
+	funcGroupPattern := `/functions/groups/(.*?)/fmodules/`
+	re, err := regexp.Compile(funcGroupPattern)
+	if err != nil {
+		return
+	}
+
 	objList := make([]map[string]string, 0)
+	fugrList := make([]string, 0)
+
 	_, objs := server.RestReadObjectList(imObjName)
 	for _, obj := range objs {
+		// 函数，则获取函数组相关的Includes
+		if obj["type"] == "FUGR/FF" {
+			matche := re.FindStringSubmatch(obj["uri"])
+			if len(matche) > 1 {
+				funcGrpName := matche[1]
+				if slices.Index(fugrList, funcGrpName) == -1 {
+					fugrList = append(fugrList, funcGrpName)
+				}
+			}
+		}
 		// 函数组
 		if obj["type"] == "FUGR/F" {
-			// 函数组相关的Includes
-			_, funInclude := server.RestReadObjectList("L" + obj["name"])
-			objList = append(objList, funInclude...)
+			funcGrpName1 := strings.ToLower(obj["name"])
+			if slices.Index(fugrList, funcGrpName1) == -1 {
+				fugrList = append(fugrList, funcGrpName1)
+			}
+
 		} else {
 			objList = append(objList, obj)
 		}
+	}
+	// 函数组相关的Includes
+	for _, obj1 := range fugrList {
+		_, funInclude := server.RestReadObjectList("L" + obj1)
+		for _, inc := range funInclude {
+			if exists := func(objs []map[string]string, url string) bool {
+				for _, obj := range objs {
+					if obj["uri"] == url {
+						return true
+					}
+				}
+				return false
+			}(objList, inc["uri"]); !exists {
+				objList = append(objList, inc)
+			}
+		}
+		// objList = append(objList, funInclude...)
 	}
 	return objList
 }
