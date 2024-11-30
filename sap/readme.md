@@ -1,5 +1,6 @@
 
 # 配置Windows
++ gorfc v0.1.1 对应版本 nwrfc750P_11
 + 系统变量设置 ：SAPNWRFC_HOME=C:\nwrfcsdk
 + PATH 增加 ：C:\nwrfcsdk\lib;C:\nwrfcsdk\bin
 + GO 环境变量设置：

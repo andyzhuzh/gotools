@@ -7,9 +7,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
-	"strconv"
 	"regexp"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -35,7 +36,6 @@ func RegexpFindDataInString(allString, strTemplate, data string) (result []strin
 	}
 	return
 }
-
 
 func StructToMap(content interface{}) (map[string]interface{}, error) {
 	var result map[string]interface{}
@@ -81,7 +81,11 @@ func FileSaveText(filefullName, content string) error {
 	var rwMutext sync.RWMutex
 	rwMutext.Lock()
 	defer rwMutext.Unlock()
-
+	dirPath := filepath.Dir(filefullName)
+	if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
+		return err
+		// log.Fatalf("无法创建目录: %v", err)
+	}
 	f, err := os.OpenFile(filefullName, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return err
@@ -101,6 +105,11 @@ func FileSaveCSV(filename string, content []map[string]interface{}) error {
 	defer rwMutext.Unlock()
 	// 创建CSV文件
 	// file, err := os.Create(filename)
+	dirPath := filepath.Dir(filename)
+	if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
+		return err
+		// log.Fatalf("无法创建目录: %v", err)
+	}
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 
 	if err != nil {
