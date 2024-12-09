@@ -136,13 +136,6 @@ func (hdmkey *HDMasterKey) NewMasterKey(mnemonic string, password string) (err e
 	hdmkey.ECPublic = DeriveECPublic(hdmkey.Key)
 	hdmkey.ECDSAPrivate = DeriveECDSAPrivate(hdmkey.Key) // retWallet.ECPivate.ToECDSA()
 	hdmkey.ECDSAPublic = DeriveECDSAPublic(hdmkey.Key)
-
-	// masterKey.ExtendedKey, _ = hdkeychain.NewMaster(NewSeed(mnemonic, masterKey.Password), &chaincfg.MainNetParams)
-	// if err != nil {
-	// 	log.Fatalf(err.Error())
-	// }
-
-	// masterKey.PrivateKey = masterKey.PrivateKeyToHex()
 	return
 }
 
@@ -190,6 +183,7 @@ func GetBIP44Index(symbol string) (index int) {
 		"ETH": 60,
 		"TRX": 195,
 		"SUI": 784,
+		"SOL": 501,
 	}
 	value, exists := BIP44Dict[symbol]
 	if exists {

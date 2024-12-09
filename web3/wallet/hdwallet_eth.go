@@ -42,6 +42,7 @@ func (wallet *HDWalletETH) NewWallet() (err error) {
 	_ = wallet.DerivePrivateKey()
 	return nil
 }
+
 func (wallet *HDWalletETH) NewWalletFromMnemonic(mnemonic string) (err error) {
 	if wallet.Key == nil {
 		wallet.Key = new(HDMasterKey)

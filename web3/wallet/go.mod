@@ -3,9 +3,11 @@ module github.com/andyzhuzh/gotools/web3/wallet
 go 1.23.2
 
 require (
+	github.com/blocto/solana-go-sdk v1.30.0
 	github.com/btcsuite/btcd v0.24.2
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
 	github.com/btcsuite/btcd/btcutil v1.1.6
+	github.com/btcsuite/btcutil v0.0.0-20190425235716-9e5f4b9a998d
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0
 	github.com/ethereum/go-ethereum v1.14.11
 	github.com/tyler-smith/go-bip32 v1.0.0
